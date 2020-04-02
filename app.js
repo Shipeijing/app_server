@@ -23,15 +23,31 @@ app.use(bodyparser({
 app.use(json())
 app.use(logger())
 app.use(require('koa-static')(__dirname + '/public'))
+app.use(views(__dirname + '/views', {
+	extension: 'pug'
+}))
+
+//utils
+//将数据库添加到ctx中
 app.use(async (ctx, next) => {
 	ctx.util = {
 		mysql: require('./utils/mysql')
 	}
 	await next()
 })
-app.use(views(__dirname + '/views', {
-	extension: 'pug'
-}))
+//将redis添加到ctx中
+app.use(async (ctx, next) => {
+	ctx.util = {
+		redis: require('./utils/redis.js')
+	}
+	await next()
+})
+app.use(async (ctx, next) => {
+	ctx.util = {
+		token: require('./utils/token.js')
+	}
+	await next()
+})
 
 // logger
 app.use(async (ctx, next) => {
