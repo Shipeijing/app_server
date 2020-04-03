@@ -27,29 +27,19 @@ app.use(views(__dirname + '/views', {
 	extension: 'pug'
 }))
 
-//utils
-//将数据库添加到ctx中
+
+//utils   ------  将工具库添加到ctx中
 app.use(async (ctx, next) => {
 	ctx.util = {
-		mysql: require('./utils/mysql')
-	}
-	await next()
-})
-//将redis添加到ctx中
-app.use(async (ctx, next) => {
-	ctx.util = {
+		mysql: require('./utils/mysql'),
+		token : require('./utils/token.js'),
 		redis: require('./utils/redis.js')
 	}
 	await next()
 })
-app.use(async (ctx, next) => {
-	ctx.util = {
-		token: require('./utils/token.js')
-	}
-	await next()
-})
 
-// logger
+
+// logger   ----   打印日志
 app.use(async (ctx, next) => {
 	const start = new Date()
 	await next()
@@ -62,7 +52,7 @@ app.ws.use(async (ctx, next) => {
 	const ms = new Date() - start
 	console.log(`${ctx.method} ${ctx.ip} - ${ms}ms`);
 })
-// routes
+// routes   ---- 路由
 app.ws.use(socketRoute.routes(), socketRoute.allowedMethods());
 app.use(httpRoute.routes(), httpRoute.allowedMethods())
 

@@ -11,7 +11,7 @@ const token={
 			expiresIn: '1day'
 		})
 		return token
-	}
+	},
 	verification: async (data)=>{
 		let payload =await jwt.verify(data, SECRET)
 		console.log(payload)
